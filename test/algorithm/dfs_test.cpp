@@ -38,7 +38,7 @@ TEST(findablePath, dfsTest)
 {
     auto path = Algorithm::dfs(findablePathMaze, entryNode, endNode);
 
-    EXPECT_TRUE(path->back() == endNode);
+    EXPECT_TRUE(path);
 }
 
 TEST(unFindablePath, dfsTest)

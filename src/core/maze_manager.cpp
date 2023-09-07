@@ -1,6 +1,7 @@
 #include "maze_manager.hpp"
 
 #include <fstream>
+#include <iostream>
 
 void MazeManager::generateMaze()
 {
@@ -50,11 +51,29 @@ void MazeManager::generateMaze()
     }
 }
 
-auto MazeManager::solveMaze(PathFindingAlgorithm pathFindingAlgo)
+void MazeManager::solveMaze(PathFindingAlgorithm pathFindingAlgo)
 {
-    return pathFindingAlgo(m_maze, m_mazeEntry, m_mazeEnding);
+    m_pathBetweenEntryAndEnding = pathFindingAlgo(m_maze, m_mazeEntry, m_mazeEnding).value_or(Path());
 }
 
 void MazeManager::printMaze()
 {
+    for (auto row = 0; row < m_maze.size(); row++)
+    {
+        for (auto col = 0; col < m_maze[0].size(); col++)
+        {
+            Node currentNode{ {row, col} };
+            if (m_pathBetweenEntryAndEnding.contains(currentNode) && 
+                currentNode != m_mazeEntry && 
+                currentNode != m_mazeEnding)
+            {
+                std::cout << "P";
+            }
+            else
+            {
+                std::cout << m_maze[row][col];
+            }
+        }
+        std::cout << std::endl;
+    }
 }

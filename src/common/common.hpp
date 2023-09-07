@@ -2,6 +2,7 @@
 
 #include <functional>
 #include <vector>
+#include <set>
 #include <tuple>
 #include <optional>
 
@@ -10,7 +11,7 @@ class Node;
 using Coordinate = std::pair <int, int>;
 using MazeRow = std::vector<char>;
 using Maze = std::vector<MazeRow>;
-using Path = std::vector<Node>;
+using Path = std::set<Node>;
 using OptionalPath = std::optional<Path>;
 using PathFindingAlgorithm = std::function<OptionalPath(const Maze&, const Node&, const Node&)>;
 

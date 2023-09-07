@@ -25,17 +25,17 @@ const bool isUsableNode(const Node& node, const Maze& maze)
 
 	auto isValidCoordinate = nodeRow >= 0 && nodeRow < maze.size() && nodeColumn >= 0 && nodeColumn < maze.front().size();
 
-	auto isNotAWall = maze[nodeRow][nodeColumn] != '*';
+	auto isNotAWall = isValidCoordinate ? maze[nodeRow][nodeColumn] != '*' : false;
 
 	return isValidCoordinate && isNotAWall;
 }
 
-static std::optional<Node> getUnvisitedNeighbor(const Node& node, const Maze& maze, const std::set<Node>& visitedNodeLookupSet)
+static std::optional<Node> getUnvisitedNeighbor(const Node& node, const Maze& maze, const Path& visitedNodes)
 {
 	auto neighBors = getNeightBors(node);
 
-	auto itemItr = std::find_if(neighBors.begin(), neighBors.end(), [&visitedNodeLookupSet, &maze](const Node& item) { 
-		return isUsableNode(item, maze) && !visitedNodeLookupSet.contains(item);
+	auto itemItr = std::find_if(neighBors.begin(), neighBors.end(), [&visitedNodes, &maze](const Node& item) { 
+		return isUsableNode(item, maze) && !visitedNodes.contains(item);
 	});
 
 	if(itemItr != neighBors.end())
@@ -46,22 +46,20 @@ static std::optional<Node> getUnvisitedNeighbor(const Node& node, const Maze& ma
 	return {};
 }
 
-static void setVisited(const Node& node, std::vector<Node>& visitedNodes, std::set<Node>& visitedNodeLookupSet, std::stack<Node>& nodeStack)
+static void setVisited(const Node& node, Path& visitedNodes, std::stack<Node>& nodeStack)
 {
-	visitedNodes.push_back(node);
-	visitedNodeLookupSet.insert(node);
+	visitedNodes.insert(node);
 	nodeStack.push(node);
 }
 
 OptionalPath Algorithm::dfs(const Maze& maze, const Node& startingNode, const Node& endingNode)
 {
-	std::set<Node> visitedNodeLookupSet {};
 	std::stack<Node> nodeStack{};
 	Path path {};
 
 	using namespace std::placeholders;
 
-	auto setVisitedForward = std::bind(setVisited, _1, std::ref(path), std::ref(visitedNodeLookupSet), std::ref(nodeStack));
+	auto setVisitedForward = std::bind(setVisited, _1, std::ref(path), std::ref(nodeStack));
 	
 	setVisitedForward(startingNode);
 
@@ -69,7 +67,7 @@ OptionalPath Algorithm::dfs(const Maze& maze, const Node& startingNode, const No
 	{
 		auto currentNode = nodeStack.top();
 
-		if (auto neighBorOpt = getUnvisitedNeighbor(currentNode, maze, visitedNodeLookupSet))
+		if (auto neighBorOpt = getUnvisitedNeighbor(currentNode, maze, path))
 		{
 			auto neighBor = neighBorOpt.value();
 			setVisitedForward(neighBor);

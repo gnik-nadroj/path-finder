@@ -17,7 +17,7 @@ public:
         generateMaze();
     }
 
-    auto solveMaze(PathFindingAlgorithm pathFindingAlgo);
+    void solveMaze(PathFindingAlgorithm pathFindingAlgo);
 
     void printMaze();
 private:
@@ -25,6 +25,7 @@ private:
     Maze m_maze{};
     Node m_mazeEntry{};
     Node m_mazeEnding{};
+    Path m_pathBetweenEntryAndEnding{};
 
     void generateMaze();
 };
