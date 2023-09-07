@@ -8,7 +8,7 @@ int main()
 {
 	try
 	{
-		MazeManager mazeManager{ "K:/dev-projects/path-finder/maze/rect_01.map" };
+		MazeManager mazeManager{ "" };
 		mazeManager.solveMaze(Algorithm::dfs);
 		mazeManager.printMaze();
 	}
