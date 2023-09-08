@@ -1,4 +1,4 @@
-add_library(core maze_manager.cpp)
+add_library(core "maze_manager.cpp")
 
 target_include_directories(core PUBLIC .)
 

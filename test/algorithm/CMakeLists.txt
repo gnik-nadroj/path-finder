@@ -1,4 +1,4 @@
-add_executable(algorithm_test dfs_test.cpp)
+add_executable(algorithm_test "algorithms_tests.cpp")
 
 target_link_libraries(algorithm_test PRIVATE algorithm)
 

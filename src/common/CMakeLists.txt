@@ -1,5 +1,5 @@
 add_library(common INTERFACE
-	common.hpp
+	"common.hpp"
 )
 
 target_include_directories(common INTERFACE .)

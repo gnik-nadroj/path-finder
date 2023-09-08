@@ -12,6 +12,7 @@ using Coordinate = std::pair <int, int>;
 using MazeRow = std::vector<char>;
 using Maze = std::vector<MazeRow>;
 using Path = std::set<Node>;
+using NodeList = std::vector<Node>;
 using OptionalPath = std::optional<Path>;
 using PathFindingAlgorithm = std::function<OptionalPath(const Maze&, const Node&, const Node&)>;
 
