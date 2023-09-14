@@ -49,16 +49,30 @@ TEST(unFindablePath, dfsTest)
     EXPECT_FALSE(path);
 }
 
-TEST(some, bfsTest)
+TEST(findablePath, bfsTest)
 {
     auto path = bfs(findablePathMaze, entryNode, endNode);
 
     EXPECT_TRUE(path);
 }
 
-TEST(some2, bfsTest)
+TEST(unFindablePath, bfsTest)
 {
     auto path = bfs(unfindablePathMaze, entryNode, endNode);
+
+    EXPECT_FALSE(path);
+}
+
+TEST(findablePath, aStarTest)
+{
+    auto path = aStar(findablePathMaze, entryNode, endNode);
+
+    EXPECT_TRUE(path);
+}
+
+TEST(unFindablePath, aStarTest)
+{
+    auto path = aStar(unfindablePathMaze, entryNode, endNode);
 
     EXPECT_FALSE(path);
 }

@@ -1,4 +1,4 @@
-add_library(algorithm "utils.cpp" "dfs.cpp" "bfs.cpp")
+add_library(algorithm "utils.cpp" "dfs.cpp" "bfs.cpp" "a_star.cpp")
  
 target_include_directories(algorithm PUBLIC .)
 

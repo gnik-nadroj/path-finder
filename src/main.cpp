@@ -8,7 +8,7 @@ int main()
 {
 	try
 	{
-		MazeManager mazeManager{ "K:/dev-projects/path-finder/maze/rect_05.map" };
+		MazeManager mazeManager{ "" };
 
 		auto startT = std::chrono::high_resolution_clock::now();
 

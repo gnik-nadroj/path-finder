@@ -32,7 +32,7 @@ std::optional<Node> getUnvisitedNeighbor(const Node& node, const Maze& maze, con
 
 	auto itemItr = std::find_if(neighBors.begin(), neighBors.end(), [&visitedNodes, &maze](const Node& item) {
 		return isUsableNode(item, maze) && !visitedNodes.contains(item);
-		});
+	});
 
 	if (itemItr != neighBors.end())
 	{
