@@ -38,7 +38,7 @@ public:
 
 	bool operator == (const Node& rightOperand) const
 	{
-		return m_coordinate == rightOperand.m_coordinate;
+		return (m_coordinate <=> rightOperand.m_coordinate) == 0;
 	}
 
 	auto operator <=> (const Node& rightOperand) const

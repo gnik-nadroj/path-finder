@@ -2,25 +2,49 @@
 #include <maze_manager.hpp>
 
 #include <chrono>
+#include <format>
 #include <iostream>
+#include <map>
 
-int main() 
+
+const std::map<std::string, PathFindingAlgorithm> algorithmsCatalog {
+	{ "bfs", bfs},
+	{ "dfs", dfs },
+	{ "a*", aStar }
+};
+
+int main(int argc, char* argv[])
 {
+	if (argc < 2) {
+		std::cerr << "missing arguments" << std::endl;
+		exit(-1);
+	}
+
 	try
 	{
-		MazeManager mazeManager{ "" };
+		auto mazeFsPath{ argv[1] };
+		auto usedAlgorithm{ argv[2] };
 
-		auto startT = std::chrono::high_resolution_clock::now();
+		MazeManager mazeManager{ mazeFsPath };
 
-		mazeManager.solveMaze(bfs);
+		if (algorithmsCatalog.contains(usedAlgorithm)) 
+		{
+			auto algo = algorithmsCatalog.at(usedAlgorithm);
 
-		auto endT = std::chrono::high_resolution_clock::now();
+			auto startT = std::chrono::high_resolution_clock::now();
 
-		auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endT - startT);
+			mazeManager.solveMaze(algo);
 
-		std::cout << "Time taken by code block: " << duration.count() << " microseconds" << std::endl;
+			auto endT = std::chrono::high_resolution_clock::now();
 
-		mazeManager.printMaze();
+			auto duration = std::chrono::duration_cast<std::chrono::microseconds>(endT - startT);
+
+			std::cout << std::format("Operation done in {} microseconds", duration);
+		}
+		else
+		{
+			std::cerr << std::format("{} algorithms is not avalaible in the algorithm catalog composed of bfs, dfs and a*\n", usedAlgorithm);
+		}
 	}
 	catch (const std::exception& e)
 	{
