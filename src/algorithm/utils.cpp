@@ -1,4 +1,5 @@
 #include "utils.hpp"
+#include <ranges>
 
 NodeList getNeightBors(const Node& node)
 {
@@ -26,17 +27,21 @@ bool isUsableNode(const Node& node, const Maze& maze)
 	return isValidCoordinate && isNotAWall;
 }
 
-std::optional<Node> getUnvisitedNeighbor(const Node& node, const Maze& maze, const Path& visitedNodes)
+NodeList getUnvisitedNeighbors(const Node& node, const Maze& maze, const Path& visitedNodes)
 {
-	auto neighBors = getNeightBors(node);
-
-	auto itemItr = std::find_if(neighBors.begin(), neighBors.end(), [&visitedNodes, &maze](const Node& item) {
+	auto usableNeighBors = getNeightBors(node) | std::views::filter([&maze, &visitedNodes](const Node& item) {
 		return isUsableNode(item, maze) && !visitedNodes.contains(item);
 	});
 
-	if (itemItr != neighBors.end())
+	return { usableNeighBors.begin(), usableNeighBors.end() };
+}
+
+std::optional<Node> getUnvisitedNeighbor(const Node& node, const Maze& maze, const Path& visitedNodes)
+{
+
+	if (auto neighbors = getUnvisitedNeighbors(node, maze, visitedNodes); !neighbors.empty())
 	{
-		return *itemItr;
+		return neighbors.front();
 	}
 
 	return {};
