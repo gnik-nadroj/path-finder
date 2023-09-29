@@ -1,32 +1,39 @@
 #include "algorithm.hpp"
 
+#include <cmath>
 #include <queue>
 
 
-static double manhattanDistance(const Node& from, const Node& to)
+
+static double diagonalDistance(const Node& from, const Node& to)
 {
+    constexpr auto diagDistance{ 1.414213562373095 };
+    constexpr auto nodeLength{ 1 };
+
     auto [fromX, fromY] = from.getCoordinate();
     auto [toX, toY] = to.getCoordinate();
 
-    return std::abs(fromX - fromY)
-           +
-           std::abs(fromY - toY);
+    auto dX{ std::abs((fromX - toX)) };
+    auto dY{ std::abs((fromY - toY)) };
+
+    return nodeLength * (dX + dY) + (diagDistance - 2 * nodeLength) * std::min(dX, dY);
 }
 
 OptionalPath aStar(const Maze& maze, const Node& startingNode, const Node& endingNode)
 {
     auto compareFunction = [&endingNode](const Node& l, const Node& r) {
-        return manhattanDistance(l, endingNode) > manhattanDistance(r, endingNode);
+        auto lCost = diagonalDistance(l, endingNode);
+        auto rCost = diagonalDistance(r, endingNode);
+        return lCost > rCost;
     };
 
-    std::priority_queue<Node, std::vector<Node>, decltype(compareFunction)> openList { compareFunction };
+    std::priority_queue<Node, std::deque<Node>, decltype(compareFunction)> openList { compareFunction };
     Path closeList{};
-    
     openList.push(startingNode);
 
     while (!openList.empty())
     {
-        auto currNode = openList.top();
+        Node currNode = openList.top();
         openList.pop();
         closeList.insert(currNode);
 
@@ -34,11 +41,25 @@ OptionalPath aStar(const Maze& maze, const Node& startingNode, const Node& endin
         {
             return closeList;
         }
-        
-        auto neighBor = getUnvisitedNeighbors(currNode, maze, closeList);
 
-        std::ranges::for_each(neighBor, [&openList](const Node& item) {
-            openList.push(item);
+        auto [nodeRow, nodeColumn] = currNode.getCoordinate();
+
+        
+        auto neighBor = {
+            Node({nodeRow, nodeColumn + 1}),
+            Node({nodeRow + 1, nodeColumn}),
+            Node({nodeRow - 1, nodeColumn}),
+            Node({nodeRow, nodeColumn - 1}),
+            Node({nodeRow - 1, nodeColumn + 1}),
+            Node({nodeRow - 1, nodeColumn - 1}),
+            Node({nodeRow + 1, nodeColumn + 1}),
+            Node({nodeRow + 1, nodeColumn - 1})
+        };
+
+        std::ranges::for_each(neighBor, [&openList, &closeList, &maze](const Node& item) {
+            if (isUsableNode(item, maze) && !closeList.contains(item)) {
+                openList.push(item);
+            }
         });
     }
 
